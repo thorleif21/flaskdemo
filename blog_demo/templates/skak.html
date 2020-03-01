@@ -1,0 +1,92 @@
+{% extends "layout.html"%}
+{% block content%}
+
+<script type="text/javascript" src='/static/js/jquery-3.4.1.min.js'></script>
+<script type="text/javascript" src='/static/js/chessboard-1.0.0.js'></script>
+<script type="text/javascript" src='/static/js/json3.min.js'></script>
+<script type="text/javascript" src='/static/js/chess.js'></script>
+<div id="board" style="width: 400px"></div>
+<div style"margin: 5px auto; width: 400px:>
+    <button type="button" id="Byrjun" class="btn btn-info">Byrjun</button>
+    <button type="button" id="Naesti" class="btn btn-info">Næsti</button>
+    <button type="button" id="Fyrri" class="btn btn-info">Fyrri</button>
+    <button type="button" id="Endir" class="btn btn-info">Endir</button>
+    <p><span id="Pgn"></span></p>
+</div>
+<script>
+    var init = function() {
+        var config = {
+            pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png',
+            position: 'start'
+            }
+
+
+const pgn = [
+    '[Event "Casual Game"]',
+    '[Site "Berlin GER"]',
+    '[Date "1852.??.??"]',
+    '[EventDate "?"]',
+    '[Round "?"]',
+    '[Result "1-0"]',
+    '[White "Adolf Anderssen"]',
+    '[Black "Jean Dufresne"]',
+    '[ECO "C52"]',
+    '[WhiteElo "?"]',
+    '[BlackElo "?"]',
+    '[PlyCount "47"]',
+    '',
+    '1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.b4 Bxb4 5.c3 Ba5 6.d4 exd4 7.O-O',
+    'd3 8.Qb3 Qf6 9.e5 Qg6 10.Re1 Nge7 11.Ba3 b5 12.Qxb5 Rb8 13.Qa4',
+    'Bb6 14.Nbd2 Bb7 15.Ne4 Qf5 16.Bxd3 Qh5 17.Nf6+ gxf6 18.exf6',
+    'Rg8 19.Rad1 Qxf3 20.Rxe7+ Nxe7 21.Qxd7+ Kxd7 22.Bf5+ Ke8',
+    '23.Bd7+ Kf8 24.Bxe7# 1-0'
+]
+var game = new Chess();
+
+game.load_pgn(pgn.join('\n'));
+
+//chess.move('e4')
+
+var board = new ChessBoard('board',config);
+$('#Pgn').html(pgn.join('\n'));
+
+var history = game.history();
+game.reset();
+var i = 0;
+
+$('#Naesti').on('click', function(){
+    console.log(i);
+    game.move(history[i]);
+    board.position(game.fen());
+    i += 1;
+    if(i > history.length){
+        i = history.length;
+    }
+});
+
+$('#Fyrri').on('click', function(){
+    game.undo();
+    board.position(game.fen());
+    i -= 1;
+    if(i < 0) {
+        i = 0;
+    }
+});
+
+$('#Byrjun').on('click', function(){
+    game.reset();
+    board.start();
+    i = 0;
+});
+
+$('#Endir').on('click', function(){
+    game.load_pgn(pgn.join('\n'));
+    board.position(game.fen());
+    i = history.length;
+});
+
+
+    }; // end init()
+    $(document).ready(init);
+    </script>
+{% endblock content%}
