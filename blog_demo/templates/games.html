@@ -1,0 +1,109 @@
+{% extends "layout.html"%}
+{% block content%}
+<div class="content-section">
+    <form action={{url_for('games')}} method="post">
+    <div class="input-group input-group-sm mb-3">
+    <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm"><button class="btn btn-outline-info btn-sm" type="submit">Leita</button></span>
+  </div>
+  <input type="text" name="search_str" id="LeitaId" class="form-control" size="30" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value="{{ request.form['search_str'] if request.method=='POST' else request.args.get('search_str', "")}}">
+  </form>
+</div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Hvítur</th>
+          <th scope="col">Svartur</th>
+          <th scope="col">Mót</th>
+          <th scope="col">Úrslit</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for game in games.items %}
+          <tr>
+            <td>{{game.white}}</td>
+            <td>{{game.black}}</td>
+            <td>{{game.event[0:15]}}</td>
+            <td>{{game.result}}</td>
+            <td>
+                <a class="btn btn-secondary btn-sm" href="{{url_for('skak',game_id=game.id)}}">Skoða</a>
+                {%if game.sendandi == current_user %}
+                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-myvalue="{{game.id}}" data-target="#deleteModal{{game.id}}">Eyða</button>
+                {%endif%}
+            </td>
+          </tr>
+          {%if game.sendandi == current_user %}
+          <!-- Modal -->
+          <div class="modal fade" id="deleteModal{{game.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="deleteModalLabel">Á að eyða skákinni?</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <form action={{url_for('delete_game', game_id=game.id)}} method="post">
+                      <input class="btn btn-danger" type="submit" value="Delete">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {%endif%}
+
+          {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% for page_num in games.iter_pages(left_edge=1, right_edge=1, left_current=1,right_current=2)%}
+       {% if page_num %}
+          {%if games.page == page_num%}
+            <a class="btn btn-info mb-4" href="{{url_for('games', page=page_num,search_str=request.form['search_str'] if request.method=='POST' else request.args.get('search_str', "")) }}">{{ page_num }}</a>
+         {%else%}
+         <a class="btn btn-outline-info mb-4" href="{{url_for('games', page=page_num,search_str=request.form['search_str'] if request.method=='POST' else request.args.get('search_str', ""))}}">{{ page_num }}</a>
+         {% endif %}
+       {%else%}
+         ---
+       {% endif %}
+    {% endfor %}
+
+    <!-- <script type="text/javascript" src='"https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
+
+    <script>
+//        document).ready(function(){
+//          $('#LeitaId').keypress(function(e){
+//          if(e.keyCode==13){
+//              var search_txt = $('#LeitaId').val();
+//              $.post( {{url_for('games')}}, { search_str: search_txt} );
+//
+//          }
+//    });
+//});
+
+//Nýtt
+//Bind keypress event to textbox
+//$(document).ready(function(){
+//$('#LeitaId').keypress(function(event){
+//    var keycode = (event.keyCode ? event.keyCode : event.which);
+//    if(keycode == '13'){
+//        var search_txt = document.getElementById("LeitaId").value;
+        //document.getElementById("#LeitaId").value;
+//         console.log('You pressed a "enter" key in textbox'+search_txt);
+//        $.post("{{url_for('games')}}", {search_str: search_txt}, function(result){
+//            console.log(result);
+//        });
+//    }
+    //Stop the event from propogation to other handlers
+    //If this line will be removed, then keypress event handler attached
+    //at document level will also be triggered
+//    event.stopPropagation();
+//});
+//});
+</script>
+
+
+ {% endblock content%}
