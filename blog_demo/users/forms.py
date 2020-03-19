@@ -1,9 +1,8 @@
-# encoding='utf-8'
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from flask_login import current_user
 from blog_demo.models import User
 
 
@@ -53,17 +52,6 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('Þetta póstfang er til. Veljið annað')
-
-
-class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
-    submit = SubmitField('Post')
-
-
-class ImportPgnForm(FlaskForm):
-    importpgn = FileField('Flytja inn pgn', validators=[FileAllowed(['pgn'])])
-    submit = SubmitField('Update')
 
 
 class RequestResetForm(FlaskForm):
