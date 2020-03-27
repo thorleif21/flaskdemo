@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import SubmitField
 
 
 class ImportPgnForm(FlaskForm):
-    importpgn = FileField('Flytja inn pgn', validators=[FileAllowed(['pgn'])])
-    submit = SubmitField('Update')
+    importpgn = FileField('Hlaða inn pgn', validators=[FileAllowed(['pgn']), FileRequired])
+    submit = SubmitField('Uppfæra')

@@ -11,12 +11,23 @@ posts = Blueprint('posts', __name__)
 @posts.route('/post/new', methods=['GET', 'POST'])
 @login_required
 def new_post():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+    default_str = ''
+    fen_str = request.args.get('fen_str', default_str)
+    hvitur_str = request.args.get('hvitur_str', default_str)
+    svartur_str = request.args.get('svartur_str', default_str)
+    result_str = request.args.get('result_str', default_str)
+
+    if fen_str == '':
+        form = PostForm()
+    else:
+        form = PostForm(request.values, title=hvitur_str+'-'+svartur_str+' '+result_str, fldh=fen_str)
+    if request.method == 'POST' and form.validate():
+
+        #    if form.validate_on_submit():
+        post = Post(title=form.title.data, fen1=form.fldh.data, content=form.content.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash('Your post has been created', 'success')
+        flash('Your post has been created POST', 'success')
         return redirect(url_for('main.home'))
     return render_template('create_post.html', title='New Post', form=form, legend="New Post")
 
@@ -39,10 +50,11 @@ def update_post(post_id):
         post.content = form.content.data
         db.session.commit()
         flash('your post has been updated', 'success')
-        return redirect(url_for('postd.post', post_id=post.id))
+        return redirect(url_for('posts.post', post_id=post.id))
     elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
+        form.fldh.data = post.fen1
     return render_template('create_post.html', title='Update Post', form=form, legend="Update Post")
 
 

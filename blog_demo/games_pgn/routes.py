@@ -40,10 +40,10 @@ def pgnimport():
 def games_list():
     if request.method == 'POST':
         search_str = request.form['search_str']
-#        flash('leitar strengurinn er '+search_str, 'success')
+        # flash('leitar strengurinn er post '+search_str, 'success')
     else:
         search_str = request.args.get('search_str', "")
-#        flash('leitar strengurinn er '+search_str, 'success')
+        # flash('leitar strengurinn er GET '+search_str, 'success')
     page = request.args.get('page', 1, type=int)
     if search_str == "":
         games = Game.query.order_by(Game.white).paginate(page=page, per_page=12)
@@ -63,3 +63,8 @@ def delete_game(game_id):
     db.session.commit()
     flash('Skákinni hefur verið eytt', 'success')
     return redirect(url_for('games_pgn.games_list'))
+
+
+@games_pgn.route('/chess_setup')
+def chess_setup():
+    return render_template('chess_setup.html', title='skak_setjaupp')

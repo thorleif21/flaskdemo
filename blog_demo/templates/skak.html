@@ -14,7 +14,19 @@
     <button type="button" id="Fyrri" class="btn btn-outline-info mt-3">Fyrri</button>
     <button type="button" id="Endir" class="btn btn-outline-info mt-3">Endir</button>&nbsp;&nbsp
     <button type="button" id="Flippa" class="btn btn-outline-info mt-3">Flippa</button>
-    <p class="mt-2"><span id="Pgn"></span></p>
+    <form action="{{url_for('posts.new_post')}}" method="get" id="form_skak">
+        <input type="hidden" name="fen_str" id="fen_strengur">
+        <input type="hidden" name="hvitur_str" id="hvitur_strengur">
+        <input type="hidden" name="svartur_str" id="svartur_strengur">
+        <input type="hidden" name="result_str" id="result_strengur">
+        {% if current_user.is_authenticated %}
+            <input type="submit" class="btn btn-outline-info mt-3" value="Blogga um stöðu">
+        {% endif %}
+    </form>
+    <label>FEN:</label>
+    <div id="fen"></div>
+    <label>PGN:</label>
+    <div id="pgn"></div>
 </div>
 <script>
     var init = function() {
@@ -44,8 +56,12 @@ $('#BlackElo').html(game.header().BlackElo);
 $('#Result').html(game.header().Result);
 $('#Site').html(game.header().Site);
 $('#Event').html(game.header().Event);
+$('#hvitur_strengur').val(game.header().White);
+$('#svartur_strengur').val(game.header().Black);
+$('#result_strengur').val(game.header().Result);
 var board = new ChessBoard('board',config);
-$('#Pgn').html(pgn.join('\n'));
+var $fen = $('#fen')
+var $pgn = $('#pgn')
 
 var history = game.history();
 game.reset();
@@ -54,6 +70,9 @@ var i = 0;
 $('#Naesti').on('click', function(){
     console.log(i);
     game.move(history[i]);
+    $('#fen_strengur').val(game.fen());
+    $fen.html(game.fen())
+    $pgn.html(game.pgn())
     board.position(game.fen());
     i += 1;
     if(i > history.length){
@@ -63,6 +82,9 @@ $('#Naesti').on('click', function(){
 
 $('#Fyrri').on('click', function(){
     game.undo();
+    $('#fen_strengur').val(game.fen());
+    $fen.html(game.fen())
+    $pgn.html(game.pgn())
     board.position(game.fen());
     i -= 1;
     if(i < 0) {
@@ -72,12 +94,21 @@ $('#Fyrri').on('click', function(){
 
 $('#Byrjun').on('click', function(){
     game.reset();
+    $('#fen_strengur').val(game.fen());
+    $fen.html(game.fen())
+    $pgn.html(game.pgn())
     board.start();
     i = 0;
 });
 
 $('#Endir').on('click', function(){
-    game.load_pgn(pgn.join('\n'));
+    game.load_pgn(pgn.join('\n'))
+    console.log(game.pgn());
+    var arr = game.pgn().split(/\n\n/)
+    console.log(arr[1]);
+    $('#fen_strengur').val(game.fen());
+    $fen.html(game.fen());
+    $pgn.html(game.pgn());
     board.position(game.fen());
     i = history.length;
 });

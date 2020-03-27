@@ -1,5 +1,11 @@
 {% extends "layout.html"%}
 {% block content%}
+{%if form.fldh.data%}
+<script type="text/javascript" src='/static/js/jquery-3.4.1.min.js'></script>
+<script type="text/javascript" src='/static/js/chessboard-1.0.0.js'></script>
+<script type="text/javascript" src='/static/js/json3.min.js'></script>
+<script type="text/javascript" src='/static/js/chess.js'></script>
+{%endif%}
 <div class="content-section">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
@@ -13,11 +19,14 @@
                         {% for error in form.title.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
-                    </div>content
+                    </div>
                 {% else %}
                     {{ form.title(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
+            {%if form.fldh.data%}
+               <div id="board1" style="width: 300px"></div>
+            {%endif%}
             <div class="form-group">
                 {{ form.content.label(class="form-control-label") }}
                 {% if form.content.errors %}
@@ -31,10 +40,25 @@
                     {{ form.content(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
+            {{ form.fldh }}
+            <!-- <input type="hidden" name="fen_str" id="fen_strengur" value="{{fen_str}}"> -->
         </fieldset>
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
     </form>
 </div>
+{%if form.fldh.data%}
+<script>
+    var init = function() {
+        var config = {
+            pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png',
+            position: '{{form.fldh.data}}',
+            showNotation: false
+            }
+        var board1 = Chessboard('board1', config);
+}; // end init()
+$(document).ready(init);
+</script>
+{%endif%}
 {% endblock content%}

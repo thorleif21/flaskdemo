@@ -1,6 +1,12 @@
 
 {% extends "layout.html" %}
 {% block content%}
+{%if post.fen1%}
+<script type="text/javascript" src='/static/js/jquery-3.4.1.min.js'></script>
+<script type="text/javascript" src='/static/js/chessboard-1.0.0.js'></script>
+<script type="text/javascript" src='/static/js/json3.min.js'></script>
+<script type="text/javascript" src='/static/js/chess.js'></script>
+{%endif%}
 <article class="media content-section">
   <img class="rounded-circle article-img" src="{{url_for('static',
   filename='profile_pics/'+post.author.image_file)}}" alt="">
@@ -15,7 +21,10 @@
       </div>
       {% endif %}
     </div>
-    <h2 class="article-title">{{ post.title }}</h2>
+    <h4 class="article-title">{{ post.title }}</h4>
+    {%if post.fen1%}
+       <div id="board1" style="width: 300px" class="mb-3"></div>
+    {%endif%}
     <p class="article-content">{{ post.content }}</p>
   </div>
 </article>
@@ -32,10 +41,25 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <form action={{url_for('posts.delete_post', post_id=post.id)}} method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <input class="btn btn-danger" type="submit" value="Delete">
         </form>
       </div>
     </div>
   </div>
 </div>
+{%if post.fen1%}
+<script>
+    var init = function() {
+        var config = {
+            pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png',
+            position: '{{post.fen1}}',
+            draggable: true,
+            showNotation: false
+            }
+        var board1 = Chessboard('board1', config);
+}; // end init()
+$(document).ready(init);
+</script>
+{%endif%}
 {% endblock content%}

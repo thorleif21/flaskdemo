@@ -2,7 +2,8 @@ import os
 import secrets
 import chess.pgn
 import hashlib
-from blog_demo import db, app
+from flask import current_app
+from blog_demo import db
 from blog_demo.models import Game
 from flask_login import current_user
 
@@ -11,9 +12,9 @@ def save_pgn(form_pgn):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_pgn.filename)
     pgn_fn = random_hex + f_ext
-    pgn_path = os.path.join(app.root_path, 'static/pgn', pgn_fn)
+    pgn_path = os.path.join(current_app.root_path, 'static/pgn', pgn_fn)
     form_pgn.save(pgn_path)
-    pgn = open(pgn_path)
+    pgn = open(pgn_path, encoding='latin-1')
     game = chess.pgn.read_game(pgn)
     i = 0
     ie = 0
