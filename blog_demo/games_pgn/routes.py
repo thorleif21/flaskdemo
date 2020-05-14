@@ -46,7 +46,7 @@ def games_list():
         # flash('leitar strengurinn er GET '+search_str, 'success')
     page = request.args.get('page', 1, type=int)
     if search_str == "":
-        games = Game.query.order_by(Game.white).paginate(page=page, per_page=12)
+        games = Game.query.order_by(Game.date_posted.desc(),  Game.white).paginate(page=page, per_page=12)
     else:
         games = Game.query.order_by(Game.white).filter(
             Game.white.like('%'+search_str+'%') | Game.black.like('%'+search_str+'%') | Game.event.like('%'+search_str+'%')).paginate(page=page, per_page=12)

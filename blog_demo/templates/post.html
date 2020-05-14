@@ -14,16 +14,16 @@
     <div class="article-metadata">
       <a class="mr-2" href="{{url_for('users.user_posts',username=post.author.username)}}">{{ post.author.username }}</a>
       <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small>
-      {% if post.author == current_user %}
+      {% if post.author == current_user or current_user.admin%}
       <div>
-          <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('posts.update_post',post_id= post.id)}}">Update</a>
-          <button type="button" class="btn btn-danger btn-sm m1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+          <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('posts.update_post',post_id= post.id)}}">Uppfæra</a>
+          <button type="button" class="btn btn-danger btn-sm m1" data-toggle="modal" data-target="#deleteModal">Eyða</button>
       </div>
       {% endif %}
     </div>
     <h4 class="article-title">{{ post.title }}</h4>
     {%if post.fen1%}
-       <div id="board1" style="width: 300px" class="mb-3"></div>
+       <div id="board1" style="width: 200px" class="mb-3 mr-3"></div>
     {%endif%}
     <p class="article-content">{{ post.content }}</p>
   </div>
@@ -54,8 +54,8 @@
         var config = {
             pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png',
             position: '{{post.fen1}}',
-            draggable: true,
-            showNotation: false
+            orientation: '{{post.orientation}}',
+            draggable: true
             }
         var board1 = Chessboard('board1', config);
 }; // end init()

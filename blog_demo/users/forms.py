@@ -7,13 +7,12 @@ from blog_demo.models import User
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(),
-                                                   Length(min=2, max=20)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',
-                                     validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Sign up')
+    username = StringField('Notandi', validators=[DataRequired(message='Verður að fylla út'), Length(min=2, max=20, message=u'Innsláttur verður að vera milli %i and %i stafir að lengd.' % (2, 20))])
+    email = StringField('Email', validators=[DataRequired(message='Það verður að fylla út'), Email(message='Óleyfilegt póstfang')])
+    password = PasswordField('Lykilorð', validators=[DataRequired(message='Það verður að fylla út')])
+    confirm_password = PasswordField('Staðfesting lykilorðs',
+                                     validators=[DataRequired(message='Það verður að fylla út'), EqualTo('password', message='Lykilorð verða að vera eins')])
+    submit = SubmitField('Skrá')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
@@ -27,19 +26,18 @@ class RegistrationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(
+    email = StringField('Póstfang', validators=[DataRequired(
         message='Það verður að fylla út'), Email(message='Rangt póstfang')])
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Lykilorð', validators=[DataRequired(message='Það verður að fylla út')])
     remember = BooleanField('Remember me')
-    submit = SubmitField('Login')
+    submit = SubmitField('Skrá inn')
 
 
 class UpdateAccountForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(),
-                                                   Length(min=2, max=20)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    username = StringField('Notandi', validators=[DataRequired(message='Verður að fylla út'), Length(min=2, max=20, message=u'Innsláttur verður að vera milli %i and %i stafir að lengd.' % (2, 20))])
+    email = StringField('Email', validators=[DataRequired(message='Verður að fylla út'), Email(message='Óleyfilegt póstfang')])
     picture = FileField('Update profile picture', validators=[FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Update')
+    submit = SubmitField('Uppfæra')
 
     def validate_username(self, username):
         if current_user.username != username.data:

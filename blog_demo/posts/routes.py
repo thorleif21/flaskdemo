@@ -13,6 +13,7 @@ posts = Blueprint('posts', __name__)
 def new_post():
     default_str = ''
     fen_str = request.args.get('fen_str', default_str)
+    orient_str = request.args.get('orient_str', default_str)
     hvitur_str = request.args.get('hvitur_str', default_str)
     svartur_str = request.args.get('svartur_str', default_str)
     result_str = request.args.get('result_str', default_str)
@@ -20,16 +21,21 @@ def new_post():
     if fen_str == '':
         form = PostForm()
     else:
-        form = PostForm(request.values, title=hvitur_str+'-'+svartur_str+' '+result_str, fldh=fen_str)
+        if orient_str == '':
+            orient_str = 'white'
+        if hvitur_str == '':
+            form = PostForm(request.values,  fldh=fen_str, orient=orient_str)
+        else:
+            form = PostForm(request.values, title=hvitur_str+'-'+svartur_str+' '+result_str, fldh=fen_str, orient=orient_str)
     if request.method == 'POST' and form.validate():
 
         #    if form.validate_on_submit():
-        post = Post(title=form.title.data, fen1=form.fldh.data, content=form.content.data, author=current_user)
+        post = Post(title=form.title.data, fen1=form.fldh.data, orientation=orient_str, content=form.content.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash('Your post has been created POST', 'success')
+        flash('Bloggið hefur verið skráð', 'success')
         return redirect(url_for('main.home'))
-    return render_template('create_post.html', title='New Post', form=form, legend="New Post")
+    return render_template('create_post.html', title='Nýtt blogg', form=form, legend="Nýtt blogg")
 
 
 @posts.route('/post/<int:post_id>')
@@ -49,20 +55,21 @@ def update_post(post_id):
         post.title = form.title.data
         post.content = form.content.data
         db.session.commit()
-        flash('your post has been updated', 'success')
+        flash('Bloggið hefur verið uppfært', 'success')
         return redirect(url_for('posts.post', post_id=post.id))
     elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
         form.fldh.data = post.fen1
-    return render_template('create_post.html', title='Update Post', form=form, legend="Update Post")
+        form.orient.data = post.orientation
+    return render_template('create_post.html', title='Uppfæra  blogg', form=form, legend="Upfæra blogg")
 
 
 @posts.route('/post/<int:post_id>/delete', methods=['POST'])
 @login_required
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
-    if post.author != current_user:
+    if post.author != current_user and not current_user.admin:
         abort(403)
     db.session.delete(post)
     db.session.commit()

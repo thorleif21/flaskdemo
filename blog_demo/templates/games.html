@@ -1,12 +1,11 @@
 {% extends "layout.html"%}
 {% block content%}
 <div class="content-section">
-    <form action={{url_for('games_pgn.games_list')}} method="post">
+    <form action={{url_for('games_pgn.games_list')}} method="get">
     <div class="input-group input-group-sm mb-3">
     <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-sm"><button class="btn btn-outline-info btn-sm" type="submit">Leita</button></span>
   </div>
-  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <input type="text" name="search_str" id="LeitaId" class="form-control" size="30" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value="{{ request.form['search_str'] if request.method=='POST' else request.args.get('search_str', "")}}">
   </form>
 </div>
@@ -34,7 +33,7 @@
                 {%endif%}
             </td>
           </tr>
-          {%if game.sendandi == current_user %}
+          {%if game.sendandi == current_user or current_user.admin %}
           <!-- Modal -->
           <div class="modal fade" id="deleteModal{{game.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

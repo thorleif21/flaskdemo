@@ -28,21 +28,22 @@
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarToggle">
+          <div class="collapse navbar-collapse"  id="navbarToggle">
               <div class="navbar-nav mr-auto">
-                <a class="nav-item nav-link" href="{{url_for('main.home')}}">Home</a>
-                <a class="nav-item nav-link" href="{{url_for('main.about')}}">About</a>
+                <a class="nav-item nav-link" href="{{url_for('main.home')}}">Heim</a>
+                <a class="nav-item nav-link" href="{{url_for('main.about')}}">Um Skákir</a>
                 <a class="nav-item nav-link" href="{{url_for('games_pgn.games_list')}}">Skákir</a>
+                <a class="nav-item nav-link" href="{{url_for('games_pgn.chess_setup')}}">Stilla upp</a>
               </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
                 {% if current_user.is_authenticated%}
-                <a class="nav-item nav-link" href="{{url_for('games_pgn.pgnimport')}}">Hlaða inn skákum</a>                <a class="nav-item nav-link" href="{{url_for('posts.new_post')}}">New Post</a>
-                <a class="nav-item nav-link" href="{{url_for('users.account')}}">Account</a>
-                <a class="nav-item nav-link" href="{{url_for('users.logout')}}">Logout</a>
+                <a class="nav-item nav-link" href="{{url_for('games_pgn.pgnimport')}}">Hlaða inn skákum</a>                <a class="nav-item nav-link" href="{{url_for('posts.new_post')}}">Nýtt Blogg</a>
+                <a class="nav-item nav-link" href="{{url_for('users.account')}}">Reikningur</a>
+                <a class="nav-item nav-link" href="{{url_for('users.logout')}}">Skrá út</a>
                 {%else%}
-              <a class="nav-item nav-link" href="{{url_for('users.login')}}">Login</a>
-              <a class="nav-item nav-link" href="{{url_for('users.register')}}">Register</a>
+              <a class="nav-item nav-link" href="{{url_for('users.login')}}">Skrá inn</a>
+              <a class="nav-item nav-link" href="{{url_for('users.register')}}">Skráning</a>
               {%endif%}
             </div>
           </div>
@@ -70,8 +71,6 @@
             <ul class="list-group">
                 <li class="list-group-item list-group-item-light">
                 <img src="{{url_for('static',filename='images/taflmenn.jpeg')}}" alt="Bobby Fischer" class="rounded mx-auto d-block img-thumbnail"></li>
-                <li class="list-group-item list-group-item-light">Blogg</li>
-                <li class="list-group-item list-group-item-light">Announcements</li>
               </ul>
             </p>
           </div>

@@ -7,7 +7,7 @@
 <script type="text/javascript" src='/static/js/chess.js'></script>
 <p class="font-weight-bold font-italic"><span id="White"></span>(<span id="WhiteElo"></span>)&nbsp;-&nbsp;<span id="Black"></span>(<span id="BlackElo"></span>)&nbsp;&nbsp<span id="Result"></span></br>
 <span id="Site"></span>&nbsp;&nbsp;<span id="Event"></span></p>
-<div id="board" style="width: 400px"></div>
+<div id="board" style="width: 350px"></div>
 <div style"margin: 5px auto; width: 400px;>
     <button type="button" id="Byrjun" class="btn btn-outline-info mt-3">Byrjun</button>
     <button type="button" id="Naesti" class="btn btn-outline-info mt-3">Næsti</button>
@@ -16,6 +16,7 @@
     <button type="button" id="Flippa" class="btn btn-outline-info mt-3">Flippa</button>
     <form action="{{url_for('posts.new_post')}}" method="get" id="form_skak">
         <input type="hidden" name="fen_str" id="fen_strengur">
+        <input type="hidden" name="orient_str" id="orient_strengur">
         <input type="hidden" name="hvitur_str" id="hvitur_strengur">
         <input type="hidden" name="svartur_str" id="svartur_strengur">
         <input type="hidden" name="result_str" id="result_strengur">
@@ -38,17 +39,17 @@
 //var rawpgn="{{pgn_string}}";
 var pgnjson = {{ pgnlist|tojson }};
 var pgn = JSON.parse(pgnjson);
-console.log(pgn);
+//console.log(pgn);
 //var pgn=rawpgn.split('\n');
 
 var game = new Chess();
 
 //game.load_pgn(pgn.join('\n'));
-console.log(game.load_pgn(pgn.join('\n')));
+game.load_pgn(pgn.join('\n'));
 
 //chess.move('e4')
-console.log(game.header().White);
-console.log(game.header().Black);
+//console.log(game.header().White);
+//console.log(game.header().Black);
 $('#White').html(game.header().White);
 $('#Black').html(game.header().Black);
 $('#WhiteElo').html(game.header().WhiteElo);
@@ -68,7 +69,7 @@ game.reset();
 var i = 0;
 
 $('#Naesti').on('click', function(){
-    console.log(i);
+    //console.log(i);
     game.move(history[i]);
     $('#fen_strengur').val(game.fen());
     $fen.html(game.fen())
@@ -103,9 +104,9 @@ $('#Byrjun').on('click', function(){
 
 $('#Endir').on('click', function(){
     game.load_pgn(pgn.join('\n'))
-    console.log(game.pgn());
-    var arr = game.pgn().split(/\n\n/)
-    console.log(arr[1]);
+    //console.log(game.pgn());
+    //var arr = game.pgn().split(/\n\n/)
+    //console.log(arr[1]);
     $('#fen_strengur').val(game.fen());
     $fen.html(game.fen());
     $pgn.html(game.pgn());
@@ -113,8 +114,10 @@ $('#Endir').on('click', function(){
     i = history.length;
 });
 
-$('#Flippa').on('click', board.flip)
-
+$('#Flippa').on('click',function(){
+        board.flip();
+        $('#orient_strengur').val(board.orientation());
+    });
     }; // end init()
     $(document).ready(init);
     </script>

@@ -4,7 +4,8 @@ from wtforms.validators import DataRequired
 
 
 class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
+    title = StringField('Titill', validators=[DataRequired(message='Insláttar krafist')])
+    content = TextAreaField('Efni', validators=[DataRequired(message='Insláttar krafist')])
     fldh = HiddenField('FieldHidden')
-    submit = SubmitField('Post')
+    orient = HiddenField('OrientHidden')
+    submit = SubmitField('Skrá')

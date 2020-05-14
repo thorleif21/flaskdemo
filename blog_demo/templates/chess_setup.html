@@ -4,18 +4,19 @@
 <script type="text/javascript" src='/static/js/chessboard-1.0.0.js'></script>
 <script type="text/javascript" src='/static/js/json3.min.js'></script>
 <script type="text/javascript" src='/static/js/chess.js'></script>
-<div id="board" style="width: 400px"></div>
+<div id="board" style="width: 350px"></div>
 <div style"margin: 5px auto; width: 400px;>
     <button type="button" id="Flippa" class="btn btn-outline-info mt-3">Flippa</button>
-    <button id="startBtn" class="btn btn-outline-info mt-3">Start Position</button>
-    <button id="clearBtn" class="btn btn-outline-info mt-3">Clear Board</button>    <form action="{{url_for('posts.new_post')}}" method="get" id="form_skak">
-        <input type="hidden" name="fen_str" id="fen_strengur">
+    <button id="startBtn" class="btn btn-outline-info mt-3">Byrjunarstaða</button>
+    <button id="clearBtn" class="btn btn-outline-info mt-3">Hreinsa borð</button>
+    <button id="setupBtn" class="btn btn-outline-info mt-3">Setja upp</button>
+   <form action="{{url_for('posts.new_post')}}" method="get" id="form_skak">
+        <p><input type="text" name="fen_str" id="fen_strengur" class="form-control"></p>
+        <input type="hidden" name="orient_str" id="orient_strengur">
         {% if current_user.is_authenticated %}
             <input type="submit" class="btn btn-outline-info mt-3" value="Blogga um stöðu">
         {% endif %}
     </form>
-    <label>FEN:</label>
-    <div id="fen"></div>
 </div>
 <script>
 var init = function() {
@@ -33,14 +34,25 @@ var game = new Chess();
 var board = new ChessBoard('board',config);
 var $fen = $('#fen')
 function onChange (oldPos, newPos) {
-   $fen.html(Chessboard.objToFen(newPos));
    $('#fen_strengur').val(Chessboard.objToFen(newPos));
 }
 
 
 $('#startBtn').on('click', board.start)
-$('#clearBtn').on('click', board.clear)
-$('#Flippa').on('click', board.flip)
+
+$('#setupBtn').on('click', function() {
+    var setup_str = $('#fen_strengur').val();
+    console.log(setup_str);
+    board.position(setup_str);
+});
+
+$('#clearBtn').on('click', board.clear);
+
+$('#Flippa').on('click',function() {
+        board.flip();
+        console.log(board.orientation());
+        $('#orient_strengur').val(board.orientation());
+    });
 
     }; // end init()
     $(document).ready(init);
