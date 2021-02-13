@@ -49,7 +49,7 @@ def games_list():
         games = Game.query.order_by(Game.date_posted.desc(),  Game.white).paginate(page=page, per_page=12)
     else:
         games = Game.query.order_by(Game.white).filter(
-            Game.white.like('%'+search_str+'%') | Game.black.like('%'+search_str+'%') | Game.event.like('%'+search_str+'%')).paginate(page=page, per_page=12)
+            Game.white.ilike('%'+search_str+'%') | Game.black.ilike('%'+search_str+'%') | Game.event.ilike('%'+search_str+'%')).paginate(page=page, per_page=12)
     return render_template('games.html', games=games)
 
 
